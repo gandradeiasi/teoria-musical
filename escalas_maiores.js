@@ -5,13 +5,12 @@ escalas_maiores_nav_item.addEventListener('click', x => geraQuestao(''));
 function geraQuestao(mensagem) {
     var main = document.querySelector('#main');
     main.innerHTML = `
-        <label>Escala: <input id='input_escala' disabled type='text' value='${obterEscalaParaQuestao()}'/></label>
-        <label>Nota: <input id='input_nota' disabled type='text' value='${sortearNotaDaEscala(window.escala)}'/></label>
+        <label>Escala: <input class="disabled_input" id='input_escala' disabled type='text' value='${obterEscalaParaQuestao()}'/></label>
+        <label>Nota: <input class="disabled_input" id='input_nota' disabled type='text' value='${sortearNotaDaEscala(window.escala)}'/></label>
         <div id="graus">
             ${obterBotoesDeGrausSorteados()}
         </div>
         <div id="message">
-         ${mensagem}
         </div>
     `;
 
@@ -22,16 +21,26 @@ function geraQuestao(mensagem) {
             var nota = document.querySelector('#input_nota').value;
             var grau_index = botao.value;
             var acertou = avaliaResposta(escala, nota, grau_index);
-            var message = '';
-
+            var escalas_maiores_save = obterEscalaMaioresSave();
+            var numero_de_acertos = escalas_maiores_save.numero_de_acertos;
             if (acertou) {
-                message = 'Acertou!';
+                if (numero_de_acertos < 7 * escalas_maiores_data.acertos_para_proxima_escala) 
+                    escalas_maiores_save.numero_de_acertos++;
+                salvaEscalaMaioresSave(escalas_maiores_save);
+                geraQuestao();
+                atualizaMensagem('Acertou!');
             } else {
-                message = 'Errou!';
+                escalas_maiores_save.numero_de_acertos = 0;
+                salvaEscalaMaioresSave(escalas_maiores_save);
+                atualizaMensagem('Errou!');
             }
-            geraQuestao(message);
         })
     });
+}
+
+function atualizaMensagem(mensagem) {
+    var message_el = document.querySelector('#message');
+    message_el.innerText = mensagem;
 }
 
 function avaliaResposta(escala, nota, grau_index) {
@@ -41,12 +50,24 @@ function avaliaResposta(escala, nota, grau_index) {
 }
 
 function obterEscalaParaQuestao() {
-    var escalas_maiores_save = localStorage.escalas_maiores_save ? JSON.parse(localStorage.escalas_maiores_save) : {};
-    var numero_de_acertos = escalas_maiores_save.numero_de_acertos || 0;
-    var indice_escala = parseInt(numero_de_acertos / escalas_maiores_data.acertos_para_proxima_escala);
+    var escalas_maiores_save = obterEscalaMaioresSave();
+    var numero_de_acertos = escalas_maiores_save.numero_de_acertos;
+    var indice_escala = parseInt(Math.random() * (numero_de_acertos / escalas_maiores_data.acertos_para_proxima_escala));
     var escala = escalas_maiores_data.escalas[indice_escala][0];
     window.escala = escala;
     return escala;
+}
+
+function obterEscalaMaioresSave() {
+    return localStorage.escalas_maiores_save ? 
+    JSON.parse(localStorage.escalas_maiores_save) 
+    : {
+        numero_de_acertos: 0
+    };
+}
+
+function salvaEscalaMaioresSave(json) {
+    localStorage.escalas_maiores_save = JSON.stringify(json);
 }
 
 function obterEscala(primeiro_grau_da_escala) {
@@ -87,7 +108,7 @@ var escalas_maiores_data = {
         5: 'VI',
         6: 'VII'
     },
-    acertos_para_proxima_escala: 4
+    acertos_para_proxima_escala: 6
 }
 
 function shuffle(array) {
