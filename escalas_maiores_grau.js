@@ -28,8 +28,7 @@
                     if (numero_de_acertos < 7 * escalas_maiores_data.acertos_para_proxima_escala)
                         escalas_maiores_save.numero_de_acertos++;
                     salvaEscalaMaioresSave(escalas_maiores_save);
-                    geraQuestao();
-                    atualizaMensagem('Acertou!');
+                    clicaEmMenuItemAleatorio();
                 } else {
                     escalas_maiores_save.numero_de_acertos = 0;
                     salvaEscalaMaioresSave(escalas_maiores_save);
@@ -88,42 +87,5 @@
         }
         var botoes_shuffled = shuffle(botoes);
         return botoes_shuffled.join('');
-    }
-
-    var escalas_maiores_data = {
-        escalas: [
-            ["C", "D", "E", "F", "G", "A", "B"],
-            ["D", "E", "F# | Gb", "G", "A", "B", "C# | Db"],
-            ["E", "F# | Gb", "G# | Ab", "A", "B", "C# | Db", "D# | Eb"],
-            ["F", "G", "A", "A# | Bb", "C", "D", "E"],
-            ["G", "A", "B", "C", "D", "E", "F#"],
-            ["A", "B", "C# | Db", "D", "E", "F# | Gb", "G# | Ab"],
-            ["B", "C# | Db", "D# | Eb", "E", "F# | Gb", "G# | Ab", "A# | Bb"]
-        ],
-        indices_graus_possiveis: [1, 2, 3, 4, 5, 6],
-        mapa_indices_para_grau: {
-            1: 'II',
-            2: 'III',
-            3: 'IV',
-            4: 'V',
-            5: 'VI',
-            6: 'VII'
-        },
-        acertos_para_proxima_escala: 6
-    }
-
-    function shuffle(array) {
-        let currentIndex = array.length, randomIndex;
-
-        while (currentIndex > 0) {
-
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex--;
-
-            [array[currentIndex], array[randomIndex]] = [
-                array[randomIndex], array[currentIndex]];
-        }
-
-        return array;
     }
 })();
