@@ -6,6 +6,7 @@
 
 .disabled_input { background: none; border: none; }
 
+nav { display: none; }
 nav ul { display: flex; padding: 0px;}
 nav ul li { list-style-type: none; border: 1px black solid; padding: 1rem; }
 nav ul li:hover { cursor: pointer; background-color: antiquewhite; }

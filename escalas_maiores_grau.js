@@ -11,6 +11,10 @@
         <div id="graus">
             ${obterBotoesDeGrausSorteados()}
         </div>
+        <div id="pontuacao">
+            <p>Acertos seguidos: ${obterAcertosSeguidos()}</p>
+            <p>Melhor sequência: ${obterMelhorSequencia()}</p>
+        </div>
         <div id="message">
         </div>
     `;
@@ -22,56 +26,15 @@
                 var nota = document.querySelector('#input_nota').value;
                 var grau_index = botao.value;
                 var acertou = avaliaResposta(escala, nota, grau_index);
-                var escalas_maiores_save = obterEscalaMaioresSave();
-                var numero_de_acertos = escalas_maiores_save.numero_de_acertos;
-                if (acertou) {
-                    if (numero_de_acertos < 7 * escalas_maiores_data.acertos_para_proxima_escala)
-                        escalas_maiores_save.numero_de_acertos++;
-                    salvaEscalaMaioresSave(escalas_maiores_save);
-                    clicaEmMenuItemAleatorio();
-                } else {
-                    escalas_maiores_save.numero_de_acertos = 0;
-                    salvaEscalaMaioresSave(escalas_maiores_save);
-                    atualizaMensagem('Errou!');
-                }
+                atualizaSaveConformeResposta(acertou);
             })
         });
-    }
-
-    function atualizaMensagem(mensagem) {
-        var message_el = document.querySelector('#message');
-        message_el.innerText = mensagem;
     }
 
     function avaliaResposta(escala, nota, grau_index) {
         var opcoes_de_nota = obterEscala(escala);
         var nota_selecionada = opcoes_de_nota[grau_index];
         return nota == nota_selecionada;
-    }
-
-    function obterEscalaParaQuestao() {
-        var escalas_maiores_save = obterEscalaMaioresSave();
-        var numero_de_acertos = escalas_maiores_save.numero_de_acertos;
-        var indice_escala = parseInt(Math.random() * (numero_de_acertos / escalas_maiores_data.acertos_para_proxima_escala));
-        var escala = escalas_maiores_data.escalas[indice_escala][0];
-        window.escala = escala;
-        return escala;
-    }
-
-    function obterEscalaMaioresSave() {
-        return localStorage.escalas_maiores_save ?
-            JSON.parse(localStorage.escalas_maiores_save)
-            : {
-                numero_de_acertos: 0
-            };
-    }
-
-    function salvaEscalaMaioresSave(json) {
-        localStorage.escalas_maiores_save = JSON.stringify(json);
-    }
-
-    function obterEscala(primeiro_grau_da_escala) {
-        return escalas_maiores_data.escalas.find(x => x[0] == primeiro_grau_da_escala);
     }
 
     function sortearNotaDaEscala(primeiro_grau_da_escala) {
