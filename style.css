@@ -1,6 +1,13 @@
 * { font-size: 22px; }
 
-.container { display: block; margin: auto; max-width: 1000px;}
+.container { display: block; margin: auto; max-width: 1000px; position: relative;}
+.container .center-vertical {
+    margin: 0;
+    position: fixed;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
 
 #main label { display: flex; }
 
